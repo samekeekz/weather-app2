@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather application</title>
+</head>
+
+
+
+<body>
+    <div class="input-container">
+        <input id="search" type="text" placeholder="Search" />
+        <svg onclick="fetchData()" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" strokewidth="1.5"
+            stroke="currentColor">
+            <path strokelinecap="round" strokelinejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+
+            <div class="weather-container">
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <h2 class="city">
+                        <%= city, country %>
+                    </h2>
+                    <p id="temperature" style="text-align: center;">
+                        <%= temperature %>
+                    </p>
+                    <img class="weather-icon" src="https://openweathermap.org/img/wn/@2x.png" alt="weather-icon" />
+                </div>
+                <div class="weather-info">
+                    <div class="temperature">Wind speed: <span id="wind">
+                            <%= wind_speed %>
+                        </span></div>
+                    <div class="description">Description: <span id="description">
+                            <%= description %>
+                        </span></div>
+                    <div class="humidity">Humidity: <span id="humidity">
+                            <%= humidity %>
+                        </span></div>
+                    <div class="pressure">Pressure: <span id="pressure">
+                            <%= pressure %>
+                        </span></div>
+                </div>
+            </div>
+    </div>
+
+
+    <style>
+        h1,
+        h2,
+        img,
+        p {
+            margin: 0;
+
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-container {
+            position: relative;
+            width: 450px;
+            margin-top: 80px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .input-container input {
+            width: 100%;
+            background-color: #ffffffc5;
+            border: 1px solid #000000;
+            padding: 14px;
+            border-radius: 10px;
+            outline: none;
+            font-size: large;
+            text-transform: capitalize;
+
+            &:focus-visible {
+                outline: none;
+            }
+
+            &:placeholder-shown {
+                font-size: large;
+            }
+        }
+
+        .input-container svg {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            top: 0;
+            right: 8px;
+            transform: translateY(6px);
+            cursor: pointer;
+        }
+
+        .weather-container {
+            margin-top: 40px;
+            width: 400px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .city {
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .weather-info {
+            font-size: 16px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            justify-items: left;
+            gap: 10px;
+        }
+
+        .temperature,
+        .description,
+        .humidity,
+        .pressure {
+            margin-bottom: 5px;
+        }
+    </style>
+
+    <script src="../../js/weather.js"></script>
+
+</body>
+
+</html>

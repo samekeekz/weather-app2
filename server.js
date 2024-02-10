@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
+const path = require("path");
 const { connectDB } = require("./config/db");
 const app = express();
 const User = require("./models/schema");
@@ -8,6 +9,8 @@ const User = require("./models/schema");
 require("dotenv").config();
 
 app.use(express.static("public"));
+app.set('view engine', 'ejs');
+app.set("views", path.join(__dirname, "public", "pages"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -65,19 +68,91 @@ app.post("/login", async (req, res) => {
         res.status(200).json({
             success: true,
             username: user.name,
-            redirectUrl: "/weather.html?username=" + user.name
+            redirectUrl: "/weatherPage?username=" + user.name
         });
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, error: "Server error" });
     }
 });
+// Function to fetch weather data
+const fetchWeatherData = async (search) => {
+    const weatherEndpoint = `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=${process.env.OPENWEATHER_API_KEY}&units=metric`;
 
-// app.get("/weather", async (req, res) => {
+    try {
+        const weatherResponse = await fetch(weatherEndpoint);
 
-// });
+        if (!weatherResponse) {
+            throw new Error('Weather data not found');
+        }
+
+        const weatherData = await weatherResponse.json();
+
+        console.log(weatherData);
+
+        const cityName = weatherData.name;
+        const country = weatherData.sys.country;
+        const temperature = weatherData.main.temp;
+        const humidity = weatherData.main.humidity;
+        const pressure = weatherData.main.pressure;
+        const windSpeed = weatherData.wind.speed;
+        const description = weatherData.weather[0].description;
+        const icon = weatherData.weather[0].icon;
+
+        return {
+            city: cityName,
+            country,
+            temperature,
+            humidity,
+            pressure,
+            wind_speed: windSpeed,
+            description,
+            icon,
+        };
+    } catch (error) {
+        console.error('Error fetching weather data:', error);
+        throw new Error('Weather data not found');
+    }
+};
+
+// Route for rendering weatherPage with weather data
+app.get("/weather", async (req, res) => {
+    const { search } = req.query;
+
+    try {
+        // Fetch weather data
+        const weatherData = await fetchWeatherData(search);
+        console.log(1);
+        console.log(weatherData);
+        res.status(200).json({
+            city: weatherData.city,
+            country: weatherData.country,
+            temperature: weatherData.temperature,
+            humidity: weatherData.humidity,
+            pressure: weatherData.pressure,
+            wind_speed: weatherData.wind_speed,
+            description: weatherData.description,
+            icon: weatherData.icon,
+            error: false
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: "Server error" });
+    }
+});
 
 
+app.get("/weatherPage", async (req, res) => {
+    res.render("weather/index", {
+        city: "",
+        country: "",
+        temperature: "",
+        humidity: "",
+        pressure: "",
+        wind_speed: "",
+        description: "",
+        icon: "",
+    });
+})
 
 
 
