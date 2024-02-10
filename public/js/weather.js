@@ -1,3 +1,4 @@
+let map;
 
 
 window.fetchData = async () => {
@@ -7,6 +8,9 @@ window.fetchData = async () => {
         const response = await fetch(url);
         const weatherData = await response.json();
         updateWeatherInfo(weatherData);
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username');
+        // updateUserData(username, weatherData);
     }
     catch (error) {
         console.log(error);
@@ -15,7 +19,8 @@ window.fetchData = async () => {
 }
 
 
-function updateWeatherInfo(weatherData) {
+async function updateWeatherInfo(weatherData) {
+
     document.querySelector('.weather-container').style.display = 'block';
     // Update city name
     document.querySelector('.city').textContent = `${weatherData.city}, ${weatherData.country}`;
@@ -36,4 +41,52 @@ function updateWeatherInfo(weatherData) {
 
     // Update pressure
     document.getElementById('pressure').textContent = `${weatherData.pressure} hPa`;
+
+    document.getElementById("link").style.display = "flex";
+
+    await displayMap(weatherData.latitude, weatherData.longitude, weatherData.city);
+}
+
+
+document.getElementById("link").addEventListener("click", function () {
+    const city = document.getElementById('search').value;
+    window.location.href = `/wikipedia?city=${city}`;
+});
+
+
+async function updateUserData(username, weatherData) {
+    try {
+        const response = await fetch(`/users/${username}/weather`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(weatherData),
+        });
+        const responseData = await response.json();
+        console.log(responseData);
+    } catch (error) {
+        console.error("Error saving weather data to user:", error);
+    }
+}
+
+
+async function displayMap(latitude, longitude, city) {
+    if (!map) {
+        // Initialize the map
+        map = L.map('map').setView([latitude, longitude], 10); // Initial coordinates and zoom level
+
+        // Add the base tile layer (OpenStreetMap)
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Samat Belentbay'
+        }).addTo(map);
+    }
+
+    map.eachLayer((layer) => {
+        if (layer instanceof L.Marker) {
+            layer.remove();
+        }
+    });
+    L.marker([latitude, longitude]).addTo(map).bindPopup(`<b>${city}</b>`).openPopup();
+
 }

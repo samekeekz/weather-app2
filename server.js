@@ -77,7 +77,13 @@ app.post("/login", async (req, res) => {
 });
 // Function to fetch weather data
 const fetchWeatherData = async (search) => {
+
+    // const { latitude, longitude } = await getCoordinates(search);
+
     const weatherEndpoint = `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=${process.env.OPENWEATHER_API_KEY}&units=metric`;
+
+    // const weatherEndpoint = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&APPID=${process.env.OPENWEATHER_API_KEY}&units=metric`
+
 
     try {
         const weatherResponse = await fetch(weatherEndpoint);
@@ -98,7 +104,8 @@ const fetchWeatherData = async (search) => {
         const windSpeed = weatherData.wind.speed;
         const description = weatherData.weather[0].description;
         const icon = weatherData.weather[0].icon;
-
+        const longitude = weatherData.coord.lon;
+        const latitude = weatherData.coord.lat;
         return {
             city: cityName,
             country,
@@ -108,12 +115,15 @@ const fetchWeatherData = async (search) => {
             wind_speed: windSpeed,
             description,
             icon,
+            longitude,
+            latitude,
         };
     } catch (error) {
         console.error('Error fetching weather data:', error);
         throw new Error('Weather data not found');
     }
 };
+
 
 // Route for rendering weatherPage with weather data
 app.get("/weather", async (req, res) => {
@@ -133,12 +143,27 @@ app.get("/weather", async (req, res) => {
             wind_speed: weatherData.wind_speed,
             description: weatherData.description,
             icon: weatherData.icon,
-            error: false
+            latitude: weatherData.latitude,
+            longitude: weatherData.longitude,
         });
     } catch (error) {
         res.status(500).json({ success: false, error: "Server error" });
     }
 });
+
+app.get("/wikipedia", async (req, res) => {
+    const { city } = req.query;
+
+    try {
+        const wikipediaData = await fetchWikipediaData(city);
+        // const firstThreeSentences = getFirstThreeSentences(wikipediaData);
+        console.log(wikipediaData);
+
+        res.render("wikipedia/index", { wikipediaData });
+    } catch (error) {
+        res.render("wikipedia/index", { success: false, error: "Server error", data: "Server error" });
+    }
+})
 
 
 app.get("/weatherPage", async (req, res) => {
@@ -154,10 +179,54 @@ app.get("/weatherPage", async (req, res) => {
     });
 })
 
+async function getCoordinates(cityName) {
+    try {
+        const encodedCityName = encodeURIComponent(cityName);
+
+        // Fetch coordinates from the OpenCageData API
+        const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodedCityName}&key=${process.env.GEO_API_KEY}`);
+        const data = await response.json();
+
+        // Extract latitude and longitude from the response data
+        const latitude = parseFloat(data.results[0].geometry.lat).toFixed(2);
+        const longitude = parseFloat(data.results[0].geometry.lng).toFixed(2);
+
+        return { latitude, longitude };
+    } catch (error) {
+        console.error('Error fetching coordinates:', error);
+        throw new Error('Failed to fetch coordinates');
+    }
+}
 
 
+// app.get("/coordinates", async (req, res) => {
+//     try {
+//         const { city } = req.query;
+//         const response = await getCoordinates(city);
+//         res.status(200).json(response);
+
+//     } catch (error) {
+//         res.status(500).json({ success: false, error: "Server error" });
+//     }
+// });
 
 
+app.post('/users/:username/weather', async (req, res) => {
+    const { username } = req.params;
+    const { city, latitude, longitude, weather, timestamp } = req.body;
+
+    try {
+        const user = await User.findOne({ name: username });
+
+        user.weatherData.push({ city, latitude, longitude, weather, timestamp });
+        await user.save();
+
+        res.status(200).json({ message: 'Weather data saved successfully' });
+    } catch (error) {
+        console.error('Error saving weather data to user:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
 
 
 
