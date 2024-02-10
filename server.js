@@ -1,6 +1,6 @@
 const express = require("express");
-const axios = require("axios");
 const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
 const { connectDB } = require("./config/db");
 const app = express();
 const User = require("./models/schema");
@@ -15,10 +15,67 @@ connectDB();
 
 
 app.get("/", (req, res) => {
-    res.redirect(__dirname + "/authorization.html");
+    res.redirect("/authorization.html");
 });
 
 
+app.post("/register", async (req, res) => {
+    const { name, email, password, city, weatherData } = req.body;
+
+    try {
+        const existingEmail = await User.findOne({ email });
+
+        if (existingEmail) {
+            return res.status(400).json({ error: "User already exists" });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            city,
+            weatherData
+        });
+
+        res.status(201).json({ message: "Registration successful" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+app.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(401).json({ success: false, error: "Username not found" });
+        }
+
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ success: false, error: "Username or password does not match" });
+        }
+
+        res.status(200).json({
+            success: true,
+            username: user.name,
+            redirectUrl: "/weather.html?username=" + user.name
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: "Server error" });
+    }
+});
+
+// app.get("/weather", async (req, res) => {
+
+// });
 
 
 
@@ -30,6 +87,10 @@ app.get("/", (req, res) => {
 
 
 
+
+
+
+// Functions for fetching weather data and Wikipedia data
 async function fetchWikipediaData(cityName) {
     const wikipediaEndpoint = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro=true&redirects=true&titles=${cityName}&origin=*`;
 
@@ -62,3 +123,13 @@ function getFirstThreeSentences(text) {
 
     return result;
 }
+
+
+
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+

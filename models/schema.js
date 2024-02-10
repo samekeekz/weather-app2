@@ -6,8 +6,6 @@ const userSchema = mongoose.Schema(
         email: String,
         password: String,
         city: String,
-        latitude: Number,
-        longitude: Number,
         weatherData: [
             {
                 city: String,
