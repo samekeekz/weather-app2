@@ -23,23 +23,22 @@ app.get("/", (req, res) => {
 
 
 app.post("/register", async (req, res) => {
-    const { name, email, password, city, weatherData } = req.body;
+    const { username, password, city, weatherData } = req.body;
 
     try {
-        const existingEmail = await User.findOne({ email });
+        const existingUser = await User.findOne({ name: username.toLowerCase() });
 
-        if (existingEmail) {
+        if (existingUser) {
             return res.status(400).json({ error: "User already exists" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({
-            name,
-            email,
+            name: username.toLowerCase(),
             password: hashedPassword,
             city,
-            weatherData
+            weatherData: [],
         });
 
         res.status(201).json({ message: "Registration successful" });
@@ -50,10 +49,10 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ name: username });
 
         if (!user) {
             return res.status(401).json({ success: false, error: "Username not found" });
@@ -75,15 +74,11 @@ app.post("/login", async (req, res) => {
         res.status(500).json({ success: false, error: "Server error" });
     }
 });
-// Function to fetch weather data
+
 const fetchWeatherData = async (search) => {
 
-    // const { latitude, longitude } = await getCoordinates(search);
 
     const weatherEndpoint = `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=${process.env.OPENWEATHER_API_KEY}&units=metric`;
-
-    // const weatherEndpoint = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&APPID=${process.env.OPENWEATHER_API_KEY}&units=metric`
-
 
     try {
         const weatherResponse = await fetch(weatherEndpoint);
@@ -125,12 +120,10 @@ const fetchWeatherData = async (search) => {
 };
 
 
-// Route for rendering weatherPage with weather data
 app.get("/weather", async (req, res) => {
     const { search } = req.query;
 
     try {
-        // Fetch weather data
         const weatherData = await fetchWeatherData(search);
         console.log(1);
         console.log(weatherData);
@@ -156,10 +149,7 @@ app.get("/wikipedia", async (req, res) => {
 
     try {
         const wikipediaData = await fetchWikipediaData(city);
-        // const firstThreeSentences = getFirstThreeSentences(wikipediaData);
-        console.log(wikipediaData);
-
-        res.render("wikipedia/index", { wikipediaData });
+        res.render("wikipedia/index", { city, wikipediaData });
     } catch (error) {
         res.render("wikipedia/index", { success: false, error: "Server error", data: "Server error" });
     }
@@ -179,46 +169,33 @@ app.get("/weatherPage", async (req, res) => {
     });
 })
 
-async function getCoordinates(cityName) {
-    try {
-        const encodedCityName = encodeURIComponent(cityName);
-
-        // Fetch coordinates from the OpenCageData API
-        const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodedCityName}&key=${process.env.GEO_API_KEY}`);
-        const data = await response.json();
-
-        // Extract latitude and longitude from the response data
-        const latitude = parseFloat(data.results[0].geometry.lat).toFixed(2);
-        const longitude = parseFloat(data.results[0].geometry.lng).toFixed(2);
-
-        return { latitude, longitude };
-    } catch (error) {
-        console.error('Error fetching coordinates:', error);
-        throw new Error('Failed to fetch coordinates');
-    }
-}
-
-
-// app.get("/coordinates", async (req, res) => {
-//     try {
-//         const { city } = req.query;
-//         const response = await getCoordinates(city);
-//         res.status(200).json(response);
-
-//     } catch (error) {
-//         res.status(500).json({ success: false, error: "Server error" });
-//     }
-// });
-
 
 app.post('/users/:username/weather', async (req, res) => {
     const { username } = req.params;
-    const { city, latitude, longitude, weather, timestamp } = req.body;
+    const { city, latitude, longitude,
+        country,
+        temperature,
+        humidity,
+        pressure,
+        wind_speed,
+        description,
+        icon } = req.body;
+    const timestamp = Date.now();
 
     try {
         const user = await User.findOne({ name: username });
 
-        user.weatherData.push({ city, latitude, longitude, weather, timestamp });
+        user.weatherData.push({
+            city, latitude, longitude, weather: {
+                country,
+                temperature,
+                humidity,
+                pressure,
+                wind_speed,
+                description,
+                icon,
+            }, timestamp
+        });
         await user.save();
 
         res.status(200).json({ message: 'Weather data saved successfully' });
@@ -229,12 +206,6 @@ app.post('/users/:username/weather', async (req, res) => {
 });
 
 
-
-
-
-
-
-// Functions for fetching weather data and Wikipedia data
 async function fetchWikipediaData(cityName) {
     const wikipediaEndpoint = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro=true&redirects=true&titles=${cityName}&origin=*`;
 
@@ -259,15 +230,6 @@ async function fetchWikipediaData(cityName) {
         throw error;
     }
 }
-
-function getFirstThreeSentences(text) {
-    const sentences = text.match(/[^.!?]+[.!?]+/g);
-    const firstThreeSentences = sentences.slice(0, 3);
-    const result = firstThreeSentences.join(' ');
-
-    return result;
-}
-
 
 
 

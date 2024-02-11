@@ -17,11 +17,10 @@ registerForm.addEventListener('submit', (event) => {
 
     const formData = new FormData(registerForm);
 
-    const name = formData.get('name');
-    const email = formData.get('email');
+    const username = formData.get('username');
     const password = formData.get('password');
 
-    handleSignUp({ name, email, password });
+    handleSignUp({ username, password });
 })
 
 loginForm.addEventListener('submit', (event) => {
@@ -29,10 +28,10 @@ loginForm.addEventListener('submit', (event) => {
 
     const formData = new FormData(loginForm);
 
-    const email = formData.get('email');
+    const username = formData.get('username');
     const password = formData.get('password');
 
-    handleSignIn({ email, password });
+    handleSignIn({ username, password });
 })
 
 async function handleSignUp(data) {

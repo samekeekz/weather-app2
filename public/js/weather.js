@@ -10,7 +10,7 @@ window.fetchData = async () => {
         updateWeatherInfo(weatherData);
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get('username');
-        // updateUserData(username, weatherData);
+        updateUserData(username, weatherData);
     }
     catch (error) {
         console.log(error);
@@ -50,7 +50,9 @@ async function updateWeatherInfo(weatherData) {
 
 document.getElementById("link").addEventListener("click", function () {
     const city = document.getElementById('search').value;
-    window.location.href = `/wikipedia?city=${city}`;
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username');
+    window.location.href = `/wikipedia?username=${username}&city=${city}`;
 });
 
 
