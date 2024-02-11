@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const path = require("path");
+const cors = require("cors");
 const { connectDB } = require("./config/db");
 const app = express();
 const User = require("./models/schema");
@@ -13,6 +14,8 @@ app.set('view engine', 'ejs');
 app.set("views", path.join(__dirname, "public", "pages"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(cors());
 
 connectDB();
 
