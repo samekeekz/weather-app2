@@ -32,6 +32,10 @@ After installation, start the server using one of the following commands:
 npm run dev
 ```
 
+The server will be running at http://localhost:3000
+
+### API keys and admin username and password is in .env file
+
 ## External APIs
 
 The `/weather` endpoint utilizes the following external APIs to gather weather and Wikipedia data.
@@ -44,17 +48,18 @@ The OpenWeatherMap API is used to retrieve current weather data for the specifie
 - **API Key:** Replace `APPID=YOUR_OPENWEATHERMAP_API_KEY` in the endpoint with your actual API key.
 - **Documentation:** [OpenWeatherMap API Documentation](https://openweathermap.org/api)
 
-### OpenCage Geocoding API
-
-The OpenCage Geocoding API is used to obtain geographical coordinates (latitude and longitude) for the specified city.
-
-- **Endpoint:** `https://api.opencagedata.com/geocode/v1/json`
-- **API Key:** Replace `key=YOUR_OPENCAGE_API_KEY` in the endpoint with your actual API key.
-- **Documentation:** [OpenCage Geocoding API Documentation](https://opencagedata.com/api)
-
 ### Wikipedia API
 
 The Wikipedia API is used to fetch introductory information about the specified city.
 
-- **Endpoint:** `https://en.wikipedia.org/w/api.php`
+- **Endpoint:** `/wikipedia`
+- **Parameter:** `search`
+- **Example:** `http://localhost:3000/wikipedia?city=amsterdam`
 - **Documentation:** [Wikipedia API Documentation](https://www.mediawiki.org/wiki/API:Main_page)
+
+### Unsplash API
+
+- **Endpoint:** `/photo`
+- **Parameter:** `city`
+- **Example:** `http://localhost:3000/photo?city=amsterdam`
+- **Documentation:** [Unsplash API Documentation](https://unsplash.com/documentation)
