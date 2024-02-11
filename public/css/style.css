@@ -48,8 +48,8 @@ a {
 
 button {
   border-radius: 20px;
-  border: 1px solid #ff4b2b;
-  background-color: #ff4b2b;
+  border: 1px solid #006dc5; /* Medium Sea Green */
+  background-color: #006dc5; /* Medium Sea Green */
   color: #ffffff;
   font-size: 12px;
   font-weight: bold;
@@ -68,7 +68,7 @@ button:focus {
 }
 
 button.ghost {
-  background-color: transparent;
+  border-color: #4169e1; /* Royal Blue */
   border-color: #ffffff;
 }
 
@@ -163,9 +163,17 @@ input {
 }
 
 .overlay {
-  background: #ff416c;
-  background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
-  background: linear-gradient(to right, #ff4b2b, #ff416c);
+  background: #4682b4; /* Steel Blue */
+  background: -webkit-linear-gradient(
+    to right,
+    #4169e1,
+    #6495ed
+  ); /* Royal Blue to Cornflower Blue */
+  background: linear-gradient(
+    to right,
+    #4169e1,
+    #6495ed
+  ); /* Royal Blue to Cornflower Blue */
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 0;

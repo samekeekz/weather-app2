@@ -19,7 +19,10 @@ registerForm.addEventListener('submit', (event) => {
 
     const username = formData.get('username');
     const password = formData.get('password');
-
+    if (username.length < 3 || password.length < 3) {
+        alert("Username and password must be at least 3 characters long.");
+        return;
+    }
     handleSignUp({ username, password });
 })
 
@@ -30,6 +33,11 @@ loginForm.addEventListener('submit', (event) => {
 
     const username = formData.get('username');
     const password = formData.get('password');
+
+    if (username.length < 3 || password.length < 3) {
+        alert("Username and password must be at least 3 characters long.");
+        return;
+    }
 
     handleSignIn({ username, password });
 })

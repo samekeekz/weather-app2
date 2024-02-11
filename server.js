@@ -81,6 +81,25 @@ app.post("/login", async (req, res) => {
     }
 });
 
+app.get("/photo", async (req, res) => {
+    const { city } = req.query;
+    const unsplashApiUrl = `https://api.unsplash.com/photos/random?query=${city}&client_id=CrXTXNPoE1q_As9WjN7gDm5-gXxMaQfRq5O4btwNM4c`;
+
+    try {
+        const unsplashResponse = await fetch(unsplashApiUrl);
+        if (!unsplashResponse.ok) {
+            throw new Error("Unsplash API error");
+        }
+
+        const unsplashData = await unsplashResponse.json();
+        res.status(200).json(unsplashData.urls.raw);
+    } catch (error) {
+        console.error("Error fetching background image:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+
 const fetchWeatherData = async (search) => {
 
 
@@ -129,8 +148,6 @@ app.get("/weather", async (req, res) => {
 
     try {
         const weatherData = await fetchWeatherData(search);
-        console.log(1);
-        console.log(weatherData);
         res.status(200).json({
             city: weatherData.city,
             country: weatherData.country,
@@ -188,7 +205,6 @@ app.post('/users/:username/weather', async (req, res) => {
 
     try {
         const user = await User.findOne({ name: username });
-
         user.weatherData.push({
             city, latitude, longitude, weather: {
                 country,
@@ -234,6 +250,7 @@ async function fetchWikipediaData(cityName) {
         throw error;
     }
 }
+
 
 
 app.get("/admin/userlist", async (req, res) => {
