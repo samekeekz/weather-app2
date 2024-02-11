@@ -4,7 +4,6 @@ const userSchema = mongoose.Schema(
     {
         name: String,
         password: String,
-        city: String,
         weatherData: [
             {
                 city: String,

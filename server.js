@@ -23,10 +23,10 @@ app.get("/", (req, res) => {
 
 
 app.post("/register", async (req, res) => {
-    const { username, password, city, weatherData } = req.body;
+    const { username, password, city } = req.body;
 
     try {
-        const existingUser = await User.findOne({ name: username.toLowerCase() });
+        const existingUser = await User.findOne({ username });
 
         if (existingUser) {
             return res.status(400).json({ error: "User already exists" });
@@ -35,9 +35,8 @@ app.post("/register", async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({
-            name: username.toLowerCase(),
+            name: username,
             password: hashedPassword,
-            city,
             weatherData: [],
         });
 
@@ -64,6 +63,13 @@ app.post("/login", async (req, res) => {
             return res.status(401).json({ success: false, error: "Username or password does not match" });
         }
 
+        if (user.isAdmin) {
+            return res.status(200).json({
+                success: true,
+                redirectUrl: "/adminPage.html",
+            });
+        }
+
         res.status(200).json({
             success: true,
             username: user.name,
@@ -88,8 +94,6 @@ const fetchWeatherData = async (search) => {
         }
 
         const weatherData = await weatherResponse.json();
-
-        console.log(weatherData);
 
         const cityName = weatherData.name;
         const country = weatherData.sys.country;
@@ -232,10 +236,80 @@ async function fetchWikipediaData(cityName) {
 }
 
 
+app.get("/admin/userlist", async (req, res) => {
+    try {
+        const users = await User.find({ isAdmin: false });
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
+})
+
+app.post("/admin/add", async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const existingUser = await User.findOne({ username });
+
+        if (existingUser) {
+            return res.status(400).json({ error: "User already exists" });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await User.create({
+            name: username,
+            password: hashedPassword,
+            weatherData: [],
+        });
+
+        res.status(201).json({ message: "Registration successful" });
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+app.post("/admin/edit", async (req, res) => {
+    const { userId, username, password } = req.body;
+    try {
+        const user = await User.findOne({ _id: userId });
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        user.name = username;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+        await user.save();
+        res.status(200).json({ message: "User updated successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+app.delete("/admin/delete", async (req, res) => {
+    const { username } = req.body;
+    try {
+        const user = await User.findOne({ name: username });
+        console.log(user);
+        const deletedUser = await User.findByIdAndDelete(user._id);
+
+        if (!deletedUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.status(200).json({ message: "User deleted successfully" });
+
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+
 
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is up and running at http://localhost:${port}`);
 });
 

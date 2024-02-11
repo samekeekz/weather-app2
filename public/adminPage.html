@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <h1>Admin Page</h1>
+        <div>
+            <div>
+                <h2>Users list</h2>
+                <ul id="userlist"></ul>
+            </div>
+            <div>
+                <h2>Add user</h2>
+                <form id="addUser" method="POST">
+                    <input type="text" name="username" placeholder="Username" />
+                    <input type="password" name="password" placeholder="Password" />
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+            <div>
+                <h2>Edit user</h2>
+                <form id="editUser" method="POST">
+                    <input type="text" name="userId" placeholder="User Id">
+                    <input type="text" name="username" placeholder="Username" />
+                    <input type="password" name="password" placeholder="Password" />
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+            <div>
+                <h2>Delete user</h2>
+                <form id="deleteUser" method="POST">
+                    <input type="text" name="username" placeholder="Username" />
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/admin.js"></script>
+
+</body>
+
+</html>
