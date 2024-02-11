@@ -4,43 +4,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic" rel="stylesheet" />
     <title>Document</title>
 </head>
 
 <body>
-    <div>
-        <h1>Admin Page</h1>
-        <div>
-            <div>
+    <h1 style="text-align: center; margin-top: 50px;">Admin Page</h1>
+    <div class="form-container">
+        <div style="padding: 0 30px">
+            <div class="form-section">
                 <h2>Users list</h2>
                 <ul id="userlist"></ul>
             </div>
-            <div>
+        </div>
+        <div>
+            <div class="form-section">
                 <h2>Add user</h2>
                 <form id="addUser" method="POST">
-                    <input type="text" name="username" placeholder="Username" />
-                    <input type="password" name="password" placeholder="Password" />
-                    <button type="submit">Add</button>
+                    <input class="form-input" type="text" name="username" placeholder="Username" />
+                    <input class="form-input" type="password" name="password" placeholder="Password" />
+                    <button class="form-button" type="submit">Add</button>
                 </form>
             </div>
-            <div>
+            <div class="form-section">
                 <h2>Edit user</h2>
                 <form id="editUser" method="POST">
-                    <input type="text" name="userId" placeholder="User Id">
-                    <input type="text" name="username" placeholder="Username" />
-                    <input type="password" name="password" placeholder="Password" />
-                    <button type="submit">Save</button>
+                    <input class="form-input" type="text" name="userId" placeholder="User Id">
+                    <input class="form-input" type="text" name="username" placeholder="Username" />
+                    <input class="form-input" type="password" name="password" placeholder="Password" />
+                    <button class="form-button" type="submit">Save</button>
                 </form>
             </div>
-            <div>
+            <div class="form-section">
                 <h2>Delete user</h2>
                 <form id="deleteUser" method="POST">
-                    <input type="text" name="username" placeholder="Username" />
-                    <button type="submit">Delete</button>
+                    <input class="form-input" type="text" name="username" placeholder="Username" />
+                    <button class="form-button" type="submit">Delete</button>
                 </form>
             </div>
         </div>
     </div>
+
+
+    <style>
+        body{
+            font-family: "Poppins", sans-serif;
+        }
+        /* Styles for the form container */
+        .form-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding-top: 70px;
+            gap: 100px;
+        }
+
+        /* Styles for headings */
+        .form-container h1,
+        .form-container h2 {
+            margin-bottom: 10px;
+        }
+
+        /* Styles for form sections */
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        /* Styles for form inputs */
+        .form-input {
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Styles for form buttons */
+        .form-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Hover effect for form buttons */
+        .form-button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
 
     <script src="./js/admin.js"></script>
 

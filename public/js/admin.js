@@ -2,7 +2,6 @@ const addForm = document.getElementById('addUser');
 const editForm = document.getElementById('editUser');
 const deleteForm = document.getElementById('deleteUser');
 
-// Function to add a new user
 async function addUser(event) {
     event.preventDefault();
 
@@ -22,14 +21,13 @@ async function addUser(event) {
         if (!response.ok) {
             throw new Error('Failed to add user');
         }
-        // Reload the user list after adding a new user
+        addForm.reset();
         await fetchUserList();
     } catch (error) {
         console.error('Error adding user:', error);
     }
 }
 
-// Function to edit an existing user
 async function editUser(event) {
     event.preventDefault();
 
@@ -48,14 +46,13 @@ async function editUser(event) {
         if (!response.ok) {
             throw new Error('Failed to edit user');
         }
-        // Reload the user list after editing a user
+        editForm.reset();
         await fetchUserList();
     } catch (error) {
         console.error('Error editing user:', error);
     }
 }
 
-// Function to delete an existing user
 async function deleteUser(event) {
     event.preventDefault();
 
@@ -73,14 +70,13 @@ async function deleteUser(event) {
         if (!response.ok) {
             throw new Error('Failed to delete user');
         }
-        // Reload the user list after deleting a user
+        deleteForm.reset();
         await fetchUserList();
     } catch (error) {
         console.error('Error deleting user:', error);
     }
 }
 
-// Function to fetch and display the list of users
 async function fetchUserList() {
     try {
         const response = await fetch('/admin/userlist');
@@ -95,15 +91,9 @@ async function fetchUserList() {
     }
 }
 
-// Function to display the list of users
 function displayUserList(userList) {
     const userListElement = document.getElementById('userlist');
     userListElement.innerHTML = '';
-    if (userList.length === 0) {
-        const listItem = document.createElement('h3');
-        listItem.textContent = "Users list is empty";
-        userListElement.appendChild(listItem);
-    }
     userList.forEach(user => {
         const listItem = document.createElement('li');
         listItem.textContent = user.name;
@@ -111,10 +101,8 @@ function displayUserList(userList) {
     });
 }
 
-// Event listeners for form submissions
 addForm.addEventListener('submit', addUser);
 editForm.addEventListener('submit', editUser);
 deleteForm.addEventListener('submit', deleteUser);
 
-// Fetch and display the initial list of users when the page loads
 window.addEventListener('load', fetchUserList);
