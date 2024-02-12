@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
+const session = require('express-session');
 const path = require("path");
 const cors = require("cors");
 const { connectDB } = require("./config/db");
@@ -16,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(cors());
+app.use(session({ secret: 'cookie', resave: true, saveUninitialized: true }));
 
 connectDB();
 
@@ -65,6 +67,9 @@ app.post("/login", async (req, res) => {
         if (!passwordMatch) {
             return res.status(401).json({ success: false, error: "Username or password does not match" });
         }
+
+        req.session.username = username;
+        req.session.isAdmin = user.isAdmin;
 
         if (user.isAdmin) {
             return res.status(200).json({
@@ -171,10 +176,12 @@ app.get("/weather", async (req, res) => {
 
 app.get("/wikipedia", async (req, res) => {
     const { city } = req.query;
+    const { isAdmin } = req.session;
+
 
     try {
         const wikipediaData = await fetchWikipediaData(city);
-        res.render("wikipedia/index", { city, wikipediaData });
+        res.render("wikipedia/index", { city, wikipediaData, isAdmin });
     } catch (error) {
         res.render("wikipedia/index", { success: false, error: "Server error", data: "Server error" });
     }
@@ -182,7 +189,10 @@ app.get("/wikipedia", async (req, res) => {
 
 
 app.get("/weatherPage", async (req, res) => {
+    const { isAdmin } = req.session;
+
     res.render("weather/index", {
+        isAdmin,
         city: "",
         country: "",
         temperature: "",
@@ -195,8 +205,9 @@ app.get("/weatherPage", async (req, res) => {
 })
 
 
-app.post('/users/:username/weather', async (req, res) => {
-    const { username } = req.params;
+app.post('/user/updateData', async (req, res) => {
+    const username = req.session.username;
+    console.log(username);
     const { city, latitude, longitude,
         country,
         temperature,
@@ -326,16 +337,15 @@ app.delete("/admin/delete", async (req, res) => {
     }
 });
 
-app.get("/history/:username", async (req, res) => {
-    const { username } = req.params;
+app.get("/history", async (req, res) => {
+    const { username, isAdmin } = req.session;
+
     try {
         const user = await User.findOne({ name: username });
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
-
-        console.log(user.weatherData);
-        res.render("history/index", { username, weatherData: user.weatherData });
+        res.render("history/index", { username, weatherData: user.weatherData, isAdmin });
     } catch (error) {
         res.status(500).json({ error: "Server error" });
     }

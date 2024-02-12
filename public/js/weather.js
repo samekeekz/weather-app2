@@ -8,9 +8,7 @@ window.fetchData = async () => {
         const response = await fetch(url);
         const weatherData = await response.json();
         updateWeatherInfo(weatherData);
-        const urlParams = new URLSearchParams(window.location.search);
-        const username = urlParams.get('username');
-        updateUserData(username, weatherData);
+        updateUserData(weatherData)
     }
     catch (error) {
         console.log(error);
@@ -50,15 +48,13 @@ async function updateWeatherInfo(weatherData) {
 
 document.getElementById("link").addEventListener("click", function () {
     const city = document.getElementById('search').value;
-    const urlParams = new URLSearchParams(window.location.search);
-    const username = urlParams.get('username');
-    window.location.href = `/wikipedia?username=${username}&city=${city}`;
+    window.location.href = `/wikipedia?city=${city}`;
 });
 
 
-async function updateUserData(username, weatherData) {
+async function updateUserData(weatherData) {
     try {
-        const response = await fetch(`/users/${username}/weather`, {
+        const response = await fetch(`/user/updateData`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

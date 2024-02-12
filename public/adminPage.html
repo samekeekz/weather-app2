@@ -11,6 +11,22 @@
 </head>
 
 <body>
+    <div class="navbar">
+        <ul>
+            <li>
+                <a href="/weatherPage">Main</a>
+            </li>
+            <li>
+                <a href="/history">History</a>
+            </li>
+            <li>
+                <a href="/adminPage.html">Users</a>
+            </li>
+            <li>
+                <a href="/">Exit</a>
+            </li>
+        </ul>
+    </div>
     <h1 style="text-align: center; margin-top: 50px;">Admin Page</h1>
     <div class="form-container">
         <div style="padding: 0 30px">
@@ -46,8 +62,9 @@
             </div>
         </div>
     </div>
-    <h3 style="text-align: center; margin-top: 50px;" >Samat SE-2206</h3>
-
+    <footer class="footer">
+        <h3>Samat SE-2026</h3>
+    </footer>
 
     <style>
         body {
@@ -97,6 +114,49 @@
         .form-button:hover {
             background-color: #0056b3;
         }
+
+        .navbar {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    background-color: #333;
+                    padding: 10px 0;
+                    text-align: center;
+                    z-index: 1000;
+                }
+
+                .navbar ul {
+                    list-style-type: none;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                .navbar li {
+                    display: inline;
+                    margin: 0 10px;
+                }
+
+                .navbar a {
+                    color: white;
+                    text-decoration: none;
+                }
+
+                .navbar a:hover {
+                    text-decoration: underline;
+                }
+
+                .footer {
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    background-color: #333;
+                    padding: 10px 0;
+                    text-align: center;
+                    z-index: 1000;
+                    color: white;
+                }
     </style>
 
     <script src="./js/admin.js"></script>

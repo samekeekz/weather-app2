@@ -4,8 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic"
+        rel="stylesheet" />
+    <title>History Page</title>
     <style>
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 10px 0;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar li {
+            display: inline;
+            margin: 0 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 10px 0;
+            text-align: center;
+            z-index: 1000;
+            color: white;
+        }
+
         body {
             font-family: "Poppins", sans-serif;
             background-color: #f4f4f4;
@@ -17,7 +63,7 @@
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 70px;
         }
 
         .weather-card h2 {
@@ -42,6 +88,22 @@
 </head>
 
 <body>
+    <div class="navbar">
+        <ul>
+            <li>
+                <a href="/weatherPage">Main</a>
+            </li>
+            <li>
+                <a href="/history">History</a>
+            </li>
+            <% if (isAdmin) { %>
+                <li><a href="/adminPage.html">Users</a></li>
+                <% } %>
+                    <li>
+                        <a href="/">Exit</a>
+                    </li>
+        </ul>
+    </div>
 
     <h1>
         <%= username %> history request
@@ -70,6 +132,12 @@
             </div>
         </div>
         <% }); %>
+
+            <footer class="footer">
+                <h3>Samat SE-2026</h3>
+            </footer>
+
+
 
 
 </body>
