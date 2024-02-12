@@ -58,7 +58,7 @@ app.post("/login", async (req, res) => {
     try {
         const user = await User.findOne({ name: username });
 
-        if (!user) {
+        if (!user || user.deletedAt !== null) {
             return res.status(401).json({ success: false, error: "Username not found" });
         }
 
@@ -294,7 +294,6 @@ app.post("/admin/add", async (req, res) => {
             password: hashedPassword,
             weatherData: [],
         });
-
         res.status(201).json({ message: "Registration successful" });
     } catch (error) {
         res.status(500).json({ error: "Server error" });
@@ -323,11 +322,11 @@ app.post("/admin/edit", async (req, res) => {
 app.delete("/admin/delete", async (req, res) => {
     const { username } = req.body;
     try {
-        const user = await User.findOne({ name: username });
-        console.log(user);
-        const deletedUser = await User.findByIdAndDelete(user._id);
+        const user = await User.findOne({ name: username, deletedAt: null });
+        user.deletedAt = new Date();
+        await user.save();
 
-        if (!deletedUser) {
+        if (user === null) {
             return res.status(404).json({ error: "User not found" });
         }
         res.status(200).json({ message: "User deleted successfully" });

@@ -104,7 +104,7 @@ async function fetchUserList() {
         }
         const userList = await response.json();
         console.log(userList);
-        displayUserList(userList);
+        populateUserTable(userList);
     } catch (error) {
         console.error('Error fetching user list:', error);
     }
@@ -117,6 +117,28 @@ function displayUserList(userList) {
         const listItem = document.createElement('li');
         listItem.textContent = user.name;
         userListElement.appendChild(listItem);
+    });
+}
+
+// Function to format timestamps
+function formatDate(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString(); // Adjust format as needed
+}
+
+// Function to populate the user table
+function populateUserTable(userlist) {
+    const tableBody = document.getElementById("userTableBody");
+    tableBody.innerHTML = ``;
+    userlist.forEach(user => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${user.name}</td>
+            <td>${formatDate(user.createdAt)}</td>
+            <td>${formatDate(user.updatedAt)}</td>
+            <td>${user.deletedAt ? formatDate(user.deletedAt) : 'Active'}</td>
+            `;
+        tableBody.appendChild(row);
     });
 }
 
