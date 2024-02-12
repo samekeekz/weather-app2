@@ -9,7 +9,11 @@ async function addUser(event) {
     const username = formData.get('username');
     const password = formData.get('password');
 
-    console.log(username, password);
+    if (username.length < 3 || password.length < 3) {
+        alert('Username and password must be at least 3 characters long');
+        return
+    }
+
     try {
         const response = await fetch('/admin/add', {
             method: 'POST',
@@ -35,6 +39,16 @@ async function editUser(event) {
     const userId = formData.get('userId');
     const username = formData.get('username');
     const password = formData.get('password');
+
+    if (userId.length === 0) {
+        alert('Please write id of user you want to edit');
+        return
+    }
+    if (username.length < 3 || password.length < 3) {
+        alert('Username and password must be at least 3 characters long');
+        return
+    }
+
     try {
         const response = await fetch('/admin/edit', {
             method: 'POST',
@@ -58,6 +72,11 @@ async function deleteUser(event) {
 
     const formData = new FormData(deleteForm);
     const username = formData.get('username');
+
+    if (username.length === 0) {
+        alert('Please write username of user you want to delete');
+        return
+    }
 
     try {
         const response = await fetch('/admin/delete', {
