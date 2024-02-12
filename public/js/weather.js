@@ -3,7 +3,7 @@ let map;
 
 window.fetchData = async () => {
     const search = document.getElementById('search').value;
-    const url = `http://localhost:3000/weather?search=${search}`;
+    const url = `/weather?search=${search}`;
     try {
         const response = await fetch(url);
         const weatherData = await response.json();
