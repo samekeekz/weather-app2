@@ -69,6 +69,7 @@ app.post("/login", async (req, res) => {
         if (user.isAdmin) {
             return res.status(200).json({
                 success: true,
+                username: user.name,
                 redirectUrl: "/adminPage.html",
             });
         }
@@ -325,6 +326,20 @@ app.delete("/admin/delete", async (req, res) => {
     }
 });
 
+app.get("/history/:username", async (req, res) => {
+    const { username } = req.params;
+    try {
+        const user = await User.findOne({ name: username });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        console.log(user.weatherData);
+        res.render("history/index", { username, weatherData: user.weatherData });
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
+});
 
 
 const port = process.env.PORT || 3000;

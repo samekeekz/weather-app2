@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .weather-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .weather-card h2 {
+            margin-top: 0;
+        }
+
+        .weather-details {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .weather-detail {
+            flex: 1;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .weather-detail p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>
+        <%= username %> history request
+    </h1>
+    <% weatherData.forEach(weather=> { %>
+        <div class="weather-card">
+            <h2>
+                <%= weather.city %>
+            </h2>
+            <p>Timestamp: <%= new Date(weather.timestamp).toLocaleString() %>
+            </p>
+            <div class="weather-details">
+                <div class="weather-detail">
+                    <p>Temperature: <%= weather.weather.temperature %>°C</p>
+                    <p>Humidity: <%= weather.weather.humidity %>%</p>
+                </div>
+                <div class="weather-detail">
+                    <p>Pressure: <%= weather.weather.pressure %> hPa</p>
+                    <p>Wind Speed: <%= weather.weather.wind_speed %> m/s</p>
+                </div>
+                <div class="weather-detail">
+                    <p>Description: <%= weather.weather.description %>
+                    </p>
+                    <img src="http://openweathermap.org/img/wn/<%= weather.weather.icon %>.png" alt="Weather Icon">
+                </div>
+            </div>
+        </div>
+        <% }); %>
+
+
+</body>
+
+</html>
