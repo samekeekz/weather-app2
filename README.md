@@ -94,10 +94,10 @@ The Wikipedia API is used to fetch introductory information about the specified 
 <img width="1402" alt="image" src="https://github.com/samekeekz/weather-app2/assets/123794172/ae480967-b2de-4040-8eeb-583a94c12b6e">
 
 6. The admin page looks like this:
-<img width="1440" alt="image" src="https://github.com/samekeekz/weather-app2/assets/123794172/5d69b9b7-09e9-4c89-b980-98bcc26e0ea8">
+<img width="1440" alt="image" src="https://github.com/samekeekz/weather-app2/assets/123794172/e62ced7c-cf1a-4c38-acec-036661d4be1c">
 
 To get in admin page write:
-login: Samat
-password: Qwerty1
+- login: Samat
+- password: Qwerty1
 
 7. Finally when user clicks button "Exit" it redirects to register/login page.
